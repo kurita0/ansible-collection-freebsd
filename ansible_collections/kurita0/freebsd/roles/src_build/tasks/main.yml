@@ -1,0 +1,10 @@
+---
+- name: mkdir /usr/local/src
+  file: dest=/usr/local/src state=directory
+
+- name: Install modules needed for building
+  pkgng:
+    name:
+      - gcc
+      - gmake
+      - pkgconf

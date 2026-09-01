@@ -1,0 +1,30 @@
+---
+- name: Configure /etc/rc.conf
+  community.general.sysrc:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+  with_items:
+    - name: tcp_extensions
+      value: "NO"
+    - name: tcp_drop_synfin
+      value: "YES"
+    - name: icmp_drop_redirect
+      value: "YES"
+
+- name: Configure sysctl
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    ignoreerrors: yes
+  with_items:
+    - name: kern.ipc.maxsockbuf
+      value: 16777216
+    - name: kern.ipc.soacceptqueue
+      value: 1024
+    - name: net.inet.tcp.blackhole
+      value: 2
+    - name: net.inet.tcp.sendspace
+      value: 262144
+    - name: net.inet.tcp.recvspace
+      value: 524288

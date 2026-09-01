@@ -1,0 +1,3 @@
+---
+# NO send-only
+sendmail_enable: "NO"

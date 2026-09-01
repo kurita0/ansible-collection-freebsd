@@ -1,0 +1,13 @@
+---
+- name: be sure node installed
+  pkgng:
+    name:
+      - node24
+      - npm-node24
+    state: present
+
+- name: Install pm2
+  shell: >
+    npm install -g pm2
+  args:
+    creates: /usr/local/bin/pm2

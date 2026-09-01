@@ -1,0 +1,27 @@
+---
+- name: be sure nginx installed
+  pkgng:
+    name: nginx
+    state: present
+    cached: true
+
+- name: Copy nginx.conf
+  template:
+    src: "{{ nginx_conf }}"
+    dest: /usr/local/etc/nginx/nginx.conf
+    mode: 0644
+    backup: yes
+  notify: restart nginx
+
+- name: Copy mime.types
+  copy: src=mime.types dest=/usr/local/etc/nginx/mime.types mode=0644 backup=yes
+  notify: restart nginx
+
+- name: nginx.enabled
+  service: name=nginx enabled=yes
+
+- name: start nginx
+  service: name=nginx state=started
+
+- name: Copy newsyslog.conf.d/nginx.conf
+  copy: src=newsyslog/nginx.conf dest=/usr/local/etc/newsyslog.conf.d/nginx.conf

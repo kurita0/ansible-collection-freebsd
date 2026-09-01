@@ -1,0 +1,15 @@
+---
+- name: Install nrpe
+  pkgng:
+    name: nrpe
+    state: present
+    cached: "{{ pkgng_cached }}"
+
+- name: Copy nrpe.cfg
+  template: src=nrpe.cfg.j2 dest=/usr/local/etc/nrpe.cfg mode=0644 backup=yes
+  notify: restart nrpe
+
+- file: dest=/usr/local/etc/nrpe.d state=directory mode=0755
+
+- name: Start nrpe
+  service: name=nrpe enabled=yes state=started

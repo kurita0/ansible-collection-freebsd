@@ -1,0 +1,4 @@
+---
+nginx_conf: nginx.conf.j2
+nginx_worker_process: 1
+nginx_worker_connections: 1024

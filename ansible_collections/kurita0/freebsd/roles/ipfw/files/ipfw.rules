@@ -1,0 +1,42 @@
+#!/bin/sh
+# Flush out the list before we begin.
+ipfw -q -f flush
+# Set rules command prefix
+cmd="ipfw -q add"
+
+$cmd 100 pass all from any to any via lo0
+$cmd 200 deny all from any to 127.0.0.0/8
+$cmd 300 deny all from 127.0.0.0/8 to any
+
+# Allow TCP through if setup succeeded
+$cmd pass tcp from any to any established
+
+# Allow IP fragments to pass through
+$cmd pass all from any to any frag
+
+# Allow access to SSH
+$cmd pass tcp from any to me 22 setup
+
+# Allow access to WWW
+$cmd pass tcp from any to me 80 setup
+$cmd pass tcp from any to me 443 setup
+
+# Allow setup of outgoing TCP connections only
+$cmd pass tcp from me to any setup
+
+# Disallow setup of all other TCP connections
+$cmd deny tcp from any to any setup
+
+# Allow DNS queries out in the world
+$cmd pass udp from me to any 53 keep-state
+
+# Allow NTP queries out in the world
+$cmd pass udp from me to any 123 keep-state
+
+# Allow TRACEROUTE
+$cmd pass udp from me to any 33434-33534 keep-state
+
+# Allow PING
+$cmd pass icmp from me to any keep-state
+$cmd pass icmp from any to any icmptype 8
+$cmd pass icmp from any to any icmptype 3,4,11

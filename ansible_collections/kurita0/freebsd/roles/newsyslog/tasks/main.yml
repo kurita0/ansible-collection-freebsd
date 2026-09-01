@@ -1,0 +1,5 @@
+---
+- name: Create /usr/local/etc/newsyslog.conf.d
+  file:
+    dest: /usr/local/etc/newsyslog.conf.d
+    state: directory

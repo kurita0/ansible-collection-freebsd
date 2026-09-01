@@ -1,0 +1,24 @@
+---
+- name: newaliases
+  command: newaliases
+
+- name: restart sendmail
+  service:
+    name: sendmail
+    state: restarted
+
+- name: sendmail make install
+  shell: >
+    cd /etc/mail &&
+    make install &&
+    make restart
+
+- name: make access.db
+  shell: >
+    cd /etc/mail &&
+    make access.db
+
+- name: make mailertable.db
+  shell: >
+    cd /etc/mail &&
+    make mailertable.db

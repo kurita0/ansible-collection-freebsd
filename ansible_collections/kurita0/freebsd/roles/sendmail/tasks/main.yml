@@ -1,0 +1,101 @@
+---
+- name: sendmail installed
+  pkgng:
+    name: sendmail
+    state: present
+  when: ansible_distribution_major_version|int >= 14
+
+- name: sma installed
+  pkgng:
+    name: sma
+    state: present
+
+- name: mkdir /etc/mail/certs
+  file:
+    dest: /etc/mail/certs
+    state: directory
+
+- name: Create dhparam
+  command: openssl dhparam -out /etc/mail/certs/dh.param 2048
+  args:
+    creates: /etc/mail/certs/dh.param
+
+- name: Copy mailer.conf
+  copy:
+    src: mailer.conf
+    dest: /etc/mail/mailer.conf
+    backup: yes
+  when: ansible_distribution_major_version|int >= 14
+
+- when: sendmail_mc is defined
+  block:
+    - name: Set SENDMAIL_MC
+      lineinfile:
+        dest: /etc/make.conf
+        state: present
+        regexp: '^SENDMAIL_MC='
+        line: 'SENDMAIL_MC=/etc/mail/{{ sendmail_mc | basename }}'
+        create: yes
+    - name: Copy sendmail.mc
+      copy:
+        src: '{{ sendmail_mc }}'
+        dest: /etc/mail/{{ sendmail_mc | basename }}
+        backup: yes
+      notify: sendmail make install
+
+- when: sendmail_submit_mc is defined
+  block:
+    - name: Set SENDMAIL_SUBMIT_MC
+      lineinfile:
+        dest: /etc/make.conf
+        state: present
+        regexp: '^SENDMAIL_SUBMIT_MC='
+        line: 'SENDMAIL_SUBMIT_MC=/etc/mail/{{ sendmail_submit_mc | basename }}'
+        create: yes
+    - name: Copy sendmail.submit.mc
+      copy:
+        src: '{{ sendmail_submit_mc }}'
+        dest: /etc/mail/{{ sendmail_submit_mc | basename }}
+        backup: yes
+      notify: sendmail make install
+
+- name: Copy local-host-names
+  when: sendmail_local_host_names is defined
+  copy:
+    src: '{{ sendmail_local_host_names }}'
+    dest: /etc/mail/local-host-names
+    backup: yes
+  notify: restart sendmail
+
+- name: Copy access
+  when: sendmail_access is defined
+  copy:
+    src: '{{ sendmail_access }}'
+    dest: /etc/mail/access
+    backup: yes
+  notify: make access.db
+
+- name: Set sendmail_enable
+  lineinfile:
+    path: /etc/rc.conf
+    regexp: '^sendmail_enable='
+    line: 'sendmail_enable="{{ sendmail_enable }}"'
+
+- name: Configure rc.conf sendmail
+  lineinfile:
+    dest: /etc/rc.conf
+    state: present
+    backup: yes
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+  with_items:
+    - regexp: '^sendmail_program='
+      line: 'sendmail_program="/usr/local/sbin/sendmail"'
+    - regexp: '^sendmail_procname='
+      line: 'sendmail_procname="/usr/local/sbin/sendmail"'
+  when: ansible_distribution_major_version|int >= 14
+
+- name: sendmail started
+  service:
+    name: sendmail
+    state: started

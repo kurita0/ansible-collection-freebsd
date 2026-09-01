@@ -1,0 +1,3 @@
+---
+dependencies:
+  - role: kurita0.freebsd.src_build

@@ -1,0 +1,6 @@
+---
+- name: restart munin-asyncd
+  service: name=munin-asyncd state=restarted
+
+- name: restart munin-node
+  service: name=munin-node state=restarted

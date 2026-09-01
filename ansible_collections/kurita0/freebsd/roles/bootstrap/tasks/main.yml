@@ -1,0 +1,5 @@
+---
+- name: Install gtar
+  pkgng:
+    name: gtar
+    state: present

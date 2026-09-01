@@ -1,0 +1,5 @@
+---
+- name: Create /usr/local/etc/syslog.d
+  file:
+    dest: /usr/local/etc/syslog.d
+    state: directory

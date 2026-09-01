@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  role_name: bootstrap
+  author: hideaki kurita
+  description: freebsd bootstrap
+
+  license: license (BSD, MIT)
+
+  min_ansible_version: 2.15
+
+  platforms:
+    - name: FreeBSD
+
+  galaxy_tags: []
+
+dependencies:
+  - role: kurita0.freebsd.newsyslog
+  - role: kurita0.freebsd.syslog

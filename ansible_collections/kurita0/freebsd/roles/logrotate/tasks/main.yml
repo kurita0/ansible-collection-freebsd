@@ -1,0 +1,17 @@
+---
+- name: Install logrotate
+  pkgng:
+    name: logrotate
+    state: present
+
+- name: Copy logrotate.conf
+  copy: src=logrotate.conf dest=/usr/local/etc/logrotate.conf mode=0644 backup=yes
+
+- name: logrotate cron
+  cron:
+    name: logrotate
+    minute: '0'
+    hour: '0'
+    user: root
+    job: "/usr/local/sbin/logrotate /usr/local/etc/logrotate.conf 1>/dev/null"
+    cron_file: ansible_logrotate

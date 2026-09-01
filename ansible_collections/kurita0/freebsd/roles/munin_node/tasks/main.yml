@@ -1,0 +1,35 @@
+---
+- name: Install munin-node
+  pkgng:
+    name: munin-node
+    state: present
+
+- name: Configure munin-node.conf
+  lineinfile:
+    dest: /usr/local/etc/munin/munin-node.conf
+    state: present
+    regexp: '^host '
+    line: 'host 127.0.0.1'
+
+- name: Enable munin-node
+  service: name=munin-node enabled=yes
+
+- name: Start munin-node
+  service: name=munin-node state=started
+
+- name: Enable munin-asyncd
+  service: name=munin-asyncd enabled=yes
+
+- name: Start munin-asyncd
+  service: name=munin-asyncd state=started
+
+- name: Set munin shell
+  user:
+    name: munin
+    shell: /bin/sh
+
+- name: Set munin authorized key
+  authorized_key:
+    user: munin
+    key: "{{ munin_authorized_key }}"
+  when: munin_authorized_key is defined

@@ -1,0 +1,68 @@
+---
+- name: Install modules needed for building postgresql
+  pkgng:
+    name:
+      - bison
+      - curl
+      - icu
+    state: present
+
+- set_fact:
+    postgresql_src: postgresql-{{ postgresql_src_version }}
+
+- name: register status of postgresql binary
+  stat:
+    path: /usr/local/src/{{ postgresql_src }}/src/backend/postgres
+  register: postgresql_binary
+
+- name: Create postgresql
+  # check if postgresql_binary is a regular file
+  when: "not postgresql_binary.stat.exists"
+  block:
+    - name: Get postgresql src
+      get_url:
+        url: https://ftp.postgresql.org/pub/source/v{{ postgresql_src_version }}/{{ postgresql_src }}.tar.gz
+        checksum: "{{ postgresql_src_checksum }}"
+        dest: /usr/local/src/{{ postgresql_src }}.tar.gz
+
+    - name: Unpack postgresql src
+      unarchive:
+        src: /usr/local/src/{{ postgresql_src }}.tar.gz
+        dest: /usr/local/src/
+        copy: no
+
+    - name: Compile postgresql
+      shell: >
+        cd /usr/local/src/{{ postgresql_src }} &&
+        ./configure {{ postgresql_src_configure_options | join(' ') }} &&
+        gmake &&
+        gmake install
+      args:
+        creates: "/usr/local/src/{{ postgresql_src }}/src/backend/postgres"
+
+- name: Compile postgresql contrib modules
+  shell: >
+    cd /usr/local/src/{{ postgresql_src }}/contrib/{{ item }} &&
+    gmake USE_PGXS=1 &&
+    gmake USE_PGXS=1 install
+  environment:
+    PATH: "/usr/local/pgsql/bin:{{ ansible_env.PATH }}"
+  args:
+    #creates: /usr/local/pgsql/lib/{{ item }}.so
+    creates: /usr/local/src/{{ postgresql_src }}/contrib/{{ item }}/{{ item }}.so
+  loop: "{{ postgresql_src_contrib_modules }}"
+
+- name: Copy postgresq start-scripts
+  copy:
+    src: "/usr/local/src/{{ postgresql_src }}/contrib/start-scripts/freebsd"
+    dest: /usr/local/etc/rc.d/postgresql
+    mode: 0755
+    remote_src: true
+
+- name: Configure profile
+  lineinfile:
+    dest: /usr/local/etc/profile
+    state: present
+    line: 'export PATH=/usr/local/pgsql/bin:$PATH'
+    backup: yes
+    create: yes
