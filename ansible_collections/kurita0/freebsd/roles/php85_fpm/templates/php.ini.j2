@@ -876,7 +876,7 @@ allow_url_include = Off
 
 ; Default timeout for socket based streams (seconds)
 ; https://php.net/default-socket-timeout
-default_socket_timeout = 60
+default_socket_timeout = {{ php_default_socket_timeout }}
 
 ; If your scripts have to deal with files from Macintosh systems,
 ; or you are running on a Mac and need to deal with files from
@@ -1317,7 +1317,7 @@ session.use_strict_mode = 0
 session.use_cookies = 1
 
 ; https://php.net/session.cookie-secure
-;session.cookie_secure =
+session.cookie_secure = {{ php_session_cookie_secure }}
 
 ; https://php.net/session.cookie-partitioned
 ;session.cookie_partitioned = 0
@@ -1352,7 +1352,7 @@ session.cookie_domain =
 ; Whether or not to add the httpOnly flag to the cookie, which makes it
 ; inaccessible to browser scripting languages such as JavaScript.
 ; https://php.net/session.cookie-httponly
-session.cookie_httponly =
+session.cookie_httponly = {{ php_session_cookie_httponly }}
 
 ; Add SameSite attribute to cookie to help mitigate Cross-Site Request Forgery (CSRF/XSRF)
 ; Current valid values are "Strict", "Lax" or "None". When using "None",
@@ -1676,20 +1676,20 @@ ldap.max_links = -1
 
 [opcache]
 ; Determines if Zend OPCache is enabled
-;opcache.enable=1
+opcache.enable=1
 
 ; Determines if Zend OPCache is enabled for the CLI version of PHP
 ;opcache.enable_cli=0
 
 ; The OPcache shared memory storage size.
-;opcache.memory_consumption=128
+opcache.memory_consumption={{ php_opcache_memory_consumption }}
 
 ; The amount of memory for interned strings in Mbytes.
-;opcache.interned_strings_buffer=8
+opcache.interned_strings_buffer={{ php_opcache_interned_strings_buffer }}
 
 ; The maximum number of keys (scripts) in the OPcache hash table.
 ; Only numbers between 200 and 1000000 are allowed.
-;opcache.max_accelerated_files=10000
+opcache.max_accelerated_files={{ php_opcache_max_accelerated_files }}
 
 ; The maximum percentage of "wasted" memory until a restart is scheduled.
 ;opcache.max_wasted_percentage=5
