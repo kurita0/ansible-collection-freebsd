@@ -1,0 +1,6 @@
+---
+apache24_httpd_conf: httpd.conf.j2
+apache24_server_name: www.example.com:80
+apache24_info_access_control:
+  - 'Require host .example.com'
+  - 'Require ip 127'

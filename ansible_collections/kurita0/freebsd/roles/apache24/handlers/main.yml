@@ -1,0 +1,3 @@
+---
+- name: restart apache24
+  service: name=apache24 state=restarted

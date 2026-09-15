@@ -1,0 +1,39 @@
+---
+- name: be sure apache modules installed
+  pkgng:
+    name:
+      - apache24
+    state: present
+
+- name: copy httpd.conf
+  template: src={{ apache24_httpd_conf }} dest=/usr/local/etc/apache24/httpd.conf mode=0644 backup=yes
+  notify: restart apache24
+  when: apache24_httpd_conf is defined
+
+- name: copy httpd-info.conf
+  template: src=httpd-info.conf.j2 dest=/usr/local/etc/apache24/extra/httpd-info.conf mode=0644 backup=yes
+  notify: restart apache24
+
+- name: configure httpd-default.conf ServerTokens
+  lineinfile:
+    dest: /usr/local/etc/apache24/extra/httpd-default.conf
+    state: present
+    regexp: '^ServerTokens (Full|Prod)'
+    line: 'ServerTokens Prod'
+
+- name: apache24 enabled
+  service: name=apache24 enabled=yes
+
+- name: configure rc.conf
+  lineinfile:
+    dest: /etc/rc.conf
+    state: present
+    regexp: '^apache24_http_accept_enable='
+    line: 'apache24_http_accept_enable="YES"'
+
+- name: apache24 started
+  service: name=apache24 state=started
+  when: false
+
+- name: Copy apache.conf
+  copy: src=newsyslog/apache.conf dest=/usr/local/etc/newsyslog.conf.d/apache.conf
