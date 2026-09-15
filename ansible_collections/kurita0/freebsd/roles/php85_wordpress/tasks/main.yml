@@ -1,0 +1,28 @@
+---
+# https://make.wordpress.org/hosting/handbook/server-environment/#required-extensions
+- name: Install php85 modules for wordpress
+  pkgng:
+    name:
+      - php85-curl
+      - php85-dom
+      - php85-exif
+      - php85-fileinfo
+      - php85-filter
+      - php85-gd
+      - php85-iconv
+      - php85-intl
+      - php85-mbstring
+      - php85-mysqli
+      - php85-phar
+      - php85-simplexml
+      - php85-tokenizer
+      - php85-xml
+      - php85-xmlreader
+      - php85-xmlwriter
+      - php85-zip
+      - php85-zlib
+      #- php85-pecl-APCu
+      #- php85-pecl-imagick
+      - wp-cli-php85
+    state: present
+  notify: restart php-fpm
