@@ -12,6 +12,9 @@
 - name: create /var/log/php-fpm directories
   file: dest=/var/log/php-fpm state=directory owner=www
 
+- name: create /var/run/php-fpm directories
+  file: dest=/var/run/php-fpm state=directory
+
 - name: Copy www.conf
   template:
     src: www.conf.j2
