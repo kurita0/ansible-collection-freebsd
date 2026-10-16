@@ -1,0 +1,5 @@
+<Location /fpm-status>
+    SetHandler "proxy:unix:/var/run/php-fpm/www.sock|fcgi://localhost"
+    Require host .example.com
+    Require ip 127
+</Location>

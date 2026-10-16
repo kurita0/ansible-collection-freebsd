@@ -1,0 +1,6 @@
+<Location {{ php_fpm_pm_status_path }}>
+    SetHandler "proxy:unix:/var/run/php-fpm/www.sock|fcgi://localhost"
+{% for line in apache24_info_access_control %}
+    {{ line }}
+{% endfor %}
+</Location>

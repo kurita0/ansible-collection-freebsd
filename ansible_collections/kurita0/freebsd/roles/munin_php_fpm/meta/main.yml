@@ -1,0 +1,3 @@
+---
+dependencies:
+  - role: kurita0.freebsd.munin_node

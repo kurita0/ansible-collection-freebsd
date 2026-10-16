@@ -1,0 +1,21 @@
+---
+- name: Install munin-contrib
+  pkgng:
+    name:
+      - munin-contrib
+      - p5-FCGI-Client
+    state: present
+
+- name: Create php_fpm_process plugins symlink
+  file:
+    src: /usr/local/share/examples/munin-contrib/plugins/php/php_fpm_process
+    dest: /usr/local/etc/munin/plugins/php_fpm_process
+    state: link
+  notify:
+    - restart munin-node
+    - restart munin-asyncd
+
+- template:
+    src: php_fpm_process.conf.j2
+    dest: /usr/local/etc/munin/plugin-conf.d/php_fpm_process.conf
+    mode: 0644

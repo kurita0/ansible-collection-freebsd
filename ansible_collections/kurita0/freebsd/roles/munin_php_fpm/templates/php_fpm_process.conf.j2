@@ -1,0 +1,4 @@
+[php_fpm_process]
+user www
+env.sock /var/run/php-fpm/www.sock
+env.path {{ php_fpm_pm_status_path }}

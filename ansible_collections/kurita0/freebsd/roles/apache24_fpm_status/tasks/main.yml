@@ -1,0 +1,8 @@
+---
+- name: fpm-status.conf
+  template:
+    src: fpm-status.conf.j2
+    dest: /usr/local/etc/apache24/Includes/fpm-status.conf
+    mode: 0644
+    backup: yes
+  notify: restart apache24
