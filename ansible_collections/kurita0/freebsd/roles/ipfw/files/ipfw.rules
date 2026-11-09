@@ -9,7 +9,7 @@ $cmd 200 deny all from any to 127.0.0.0/8
 $cmd 300 deny all from 127.0.0.0/8 to any
 
 # Allow TCP through if setup succeeded
-$cmd pass tcp from any to any established
+$cmd 10000 pass tcp from any to any established
 
 # Allow IP fragments to pass through
 $cmd pass all from any to any frag
