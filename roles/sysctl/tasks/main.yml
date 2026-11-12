@@ -21,7 +21,7 @@
     - name: kern.ipc.maxsockbuf
       value: 16777216
     - name: kern.ipc.soacceptqueue
-      value: 1024
+      value: "{{ sysctl_soacceptqueue }}"
     - name: net.inet.tcp.blackhole
       value: 2
     - name: net.inet.tcp.sendspace
